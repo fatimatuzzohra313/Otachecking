@@ -30,7 +30,7 @@ export default function App() {
     setErrorMsg("");
     try {
       const res = await fetch(
-        "https://raw.githubusercontent.com/fatimatuzzohra313/Otachecking/main/ota/version.json"
+        "https://raw.githubusercontent.com/fatimatuzzohra313/Otachecking/pla/ota/version.json"
       );
       const remote = await res.json();
       const localVersion = await OTAHotUpdate.getCurrentVersion();
