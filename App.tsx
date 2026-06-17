@@ -78,7 +78,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Fatima Mazakh krrhi  </Text>
+      <Text style={styles.heading}>Fatima App V2 </Text>
 
       <View style={styles.card}>
         {status === "checking" && (
