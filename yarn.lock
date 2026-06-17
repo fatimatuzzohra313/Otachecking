@@ -4099,9 +4099,9 @@ isexe@^2.0.0:
   resolved "https://registry.npmjs.org/isexe/-/isexe-2.0.0.tgz"
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
 
-isomorphic-git@*:
+isomorphic-git@*, isomorphic-git@^1.38.5:
   version "1.38.5"
-  resolved "https://registry.npmjs.org/isomorphic-git/-/isomorphic-git-1.38.5.tgz"
+  resolved "https://registry.npmmirror.com/isomorphic-git/-/isomorphic-git-1.38.5.tgz"
   integrity sha512-4HBmx1UB+SdRaQh7+zN7lvFQxc4zl7s0oIM/1+5xveu6+QrOeFfx5QDeRNpqCzFHICISEdbK7GilsTsrgE006Q==
   dependencies:
     async-lock "^1.4.1"

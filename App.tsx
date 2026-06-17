@@ -8,13 +8,13 @@ import {
   StyleSheet,
   Linking,
 } from "react-native";
-
+import RNFS from "react-native-fs";
 import OTAHotUpdate from "react-native-ota-hot-update";
-import ReactNativeBlobUtil from "react-native-blob-util";
 import Share from "react-native-share";
 
 const BUNDLE_NAME =
   Platform.OS === "android" ? "index.android.bundle" : "main.jsbundle";
+const GITHUB_RAW = "https://raw.githubusercontent.com/fatimatuzzohra313/Otachecking/pla/ota";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.myapp";
 
 type Status = "checking" | "latest" | "downloading" | "ready" | "error";
@@ -29,32 +29,32 @@ export default function App() {
     setStatus("checking");
     setErrorMsg("");
     try {
-      const res = await fetch(
-        "https://raw.githubusercontent.com/fatimatuzzohra313/Otachecking/pla/ota/version.json"
-      );
-      const remote = await res.json();
+      const verRes = await fetch(`${GITHUB_RAW}/version.json`);
+      const remote = await verRes.json();
       const localVersion = await OTAHotUpdate.getCurrentVersion();
-
       setLocalVer(String(localVersion));
       setRemoteVer(remote.version);
 
       if (localVersion !== remote.version) {
         setStatus("downloading");
-
-        const destPath = `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/${BUNDLE_NAME}`;
-        const dl = await ReactNativeBlobUtil.config({
-          path: destPath,
-          fileCache: true,
-        }).fetch("GET", remote.bundleUrl);
-
-        const downloadedPath = dl.path();
-        const success = await OTAHotUpdate.setupExactBundlePath(downloadedPath);
-        if (success) {
-          await OTAHotUpdate.setCurrentVersion(remote.version);
-          setStatus("ready");
+        const destPath = `${RNFS.DocumentDirectoryPath}/${BUNDLE_NAME}`;
+        const dl = RNFS.downloadFile({
+          fromUrl: remote.bundleUrl,
+          toFile: destPath,
+        });
+        const result = await dl.promise;
+        if (result.statusCode === 200) {
+          const success = await OTAHotUpdate.setupExactBundlePath(destPath);
+          if (success) {
+            await OTAHotUpdate.setCurrentVersion(remote.version);
+            setStatus("ready");
+          } else {
+            setStatus("error");
+            setErrorMsg("Failed to install bundle");
+          }
         } else {
           setStatus("error");
-          setErrorMsg("Failed to install bundle");
+          setErrorMsg(`Download failed (HTTP ${result.statusCode})`);
         }
       } else {
         setStatus("latest");
