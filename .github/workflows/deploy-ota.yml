@@ -1,0 +1,39 @@
+name: Deploy OTA Bundle
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Build bundles
+        run: |
+          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output ota/index.android.bundle --assets-dest ota/assets
+          npx react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ota/main.jsbundle --assets-dest ota/assets
+
+      - name: Bump version
+        run: |
+          VERSION=$(jq '.version + 1' ota/version.json)
+          jq --arg v "$VERSION" '.version = ($v | tonumber)' ota/version.json > tmp.json && mv tmp.json ota/version.json
+          echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Push OTA updates
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add ota/
+          git commit -m "OTA bundle v${{ env.NEW_VERSION }}" || echo "No changes to commit"
+          git push

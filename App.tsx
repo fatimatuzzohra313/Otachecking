@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
-  Alert,
+  Platform,
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
+  Linking,
 } from "react-native";
 
 import OTAHotUpdate from "react-native-ota-hot-update";
-import RNFS from "react-native-fs";
+import ReactNativeBlobUtil from "react-native-blob-util";
+import Share from "react-native-share";
 
-const BUNDLE_PATH = RNFS.DocumentDirectoryPath + "/index.android.bundle";
+const BUNDLE_NAME =
+  Platform.OS === "android" ? "index.android.bundle" : "main.jsbundle";
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.myapp";
 
 type Status = "checking" | "latest" | "downloading" | "ready" | "error";
-
-function setupOTA() {
-  OTAHotUpdate.setupBundlePath(BUNDLE_PATH, "index.android.bundle", 1, 10, {});
-}
 
 export default function App() {
   const [status, setStatus] = useState<Status>("checking");
@@ -40,22 +40,22 @@ export default function App() {
 
       if (localVersion !== remote.version) {
         setStatus("downloading");
-        await OTAHotUpdate.downloadBundleUri(
-          remote.bundleUrl,
-          "index.android.bundle",
-          1,
-          {
-            restartAfterInstall: false,
-            updateSuccess: () => {
-              setStatus("ready");
-            },
-            updateFail: (msg: string) => {
-              setStatus("error");
-              setErrorMsg(msg);
-            },
-          }
-        );
-        OTAHotUpdate.setCurrentVersion(remote.version);
+
+        const destPath = `${ReactNativeBlobUtil.fs.dirs.DocumentDir}/${BUNDLE_NAME}`;
+        const dl = await ReactNativeBlobUtil.config({
+          path: destPath,
+          fileCache: true,
+        }).fetch("GET", remote.bundleUrl);
+
+        const downloadedPath = dl.path();
+        const success = await OTAHotUpdate.setupExactBundlePath(downloadedPath);
+        if (success) {
+          await OTAHotUpdate.setCurrentVersion(remote.version);
+          setStatus("ready");
+        } else {
+          setStatus("error");
+          setErrorMsg("Failed to install bundle");
+        }
       } else {
         setStatus("latest");
       }
@@ -65,8 +65,14 @@ export default function App() {
     }
   }
 
+  const shareApp = useCallback(() => {
+    Share.open({
+      message: `Check out this app!\n${PLAY_STORE_URL}`,
+      url: PLAY_STORE_URL,
+    }).catch(() => {});
+  }, []);
+
   useEffect(() => {
-    setupOTA();
     checkOTA();
   }, []);
 
@@ -127,6 +133,17 @@ export default function App() {
 
       <TouchableOpacity style={styles.checkBtn} onPress={checkOTA}>
         <Text style={styles.checkBtnText}>Check for Updates</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.shareBtn} onPress={shareApp}>
+        <Text style={styles.shareBtnText}>Share on WhatsApp</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.storeBtn}
+        onPress={() => Linking.openURL(PLAY_STORE_URL)}
+      >
+        <Text style={styles.storeBtnText}>Rate on Play Store</Text>
       </TouchableOpacity>
     </View>
   );
@@ -206,6 +223,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   checkBtnText: {
+    color: "#6C63FF",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  shareBtn: {
+    backgroundColor: "#25D366",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    marginTop: 12,
+    width: "100%",
+    alignItems: "center",
+  },
+  shareBtnText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  storeBtn: {
+    borderWidth: 1.5,
+    borderColor: "#6C63FF",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    marginTop: 12,
+    width: "100%",
+    alignItems: "center",
+  },
+  storeBtnText: {
     color: "#6C63FF",
     fontSize: 14,
     fontWeight: "600",
