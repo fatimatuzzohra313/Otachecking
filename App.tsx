@@ -17,7 +17,7 @@ const BUNDLE_NAME =
 const GITHUB_RAW = "https://raw.githubusercontent.com/fatimatuzzohra313/Otachecking/pla/ota";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.myapp";
 
-type Status = "checking" | "latest" | "downloading" | "ready" | "error";
+type Status = "checking" | "latest" | "downloading" | "error";
 
 export default function App() {
   const [status, setStatus] = useState<Status>("checking");
@@ -47,7 +47,7 @@ export default function App() {
           const success = await OTAHotUpdate.setupExactBundlePath(destPath);
           if (success) {
             await OTAHotUpdate.setCurrentVersion(remote.version);
-            setStatus("ready");
+            await OTAHotUpdate.resetApp();
           } else {
             setStatus("error");
             setErrorMsg("Failed to install bundle");
@@ -78,7 +78,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Fatima App V3</Text>
+      <Text style={styles.heading}>Fatima App V3 (Auto Update)</Text>
 
       <View style={styles.card}>
         {status === "checking" && (
@@ -103,19 +103,6 @@ export default function App() {
             <Text style={styles.versionText}>
               v{localVer} → v{remoteVer}
             </Text>
-          </>
-        )}
-
-        {status === "ready" && (
-          <>
-            <Text style={styles.greenIcon}>⬇</Text>
-            <Text style={styles.statusText}>Update ready to install</Text>
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => OTAHotUpdate.resetApp()}
-            >
-              <Text style={styles.btnText}>Restart Now</Text>
-            </TouchableOpacity>
           </>
         )}
 
@@ -144,6 +131,10 @@ export default function App() {
         onPress={() => Linking.openURL(PLAY_STORE_URL)}
       >
         <Text style={styles.storeBtnText}>Rate on Play Store</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.payBtn} disabled>
+        <Text style={styles.payBtnText}>Payment (Current Month Paid)</Text>
       </TouchableOpacity>
     </View>
   );
@@ -253,6 +244,21 @@ const styles = StyleSheet.create({
   },
   storeBtnText: {
     color: "#6C63FF",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  payBtn: {
+    backgroundColor: "#B0B0B0",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    marginTop: 12,
+    width: "100%",
+    alignItems: "center",
+    opacity: 0.6,
+  },
+  payBtnText: {
+    color: "#FFF",
     fontSize: 14,
     fontWeight: "600",
   },
