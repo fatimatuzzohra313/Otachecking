@@ -48,9 +48,8 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#1a1a2e" />
+      <StatusBar barStyle="light-content" backgroundColor="#1A120B" />
 
-      {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <View style={styles.avatar}>
@@ -72,7 +71,6 @@ export default function App() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Balance Card */}
         <View style={styles.balanceCard}>
           <View style={styles.balanceRow}>
             <Text style={styles.balanceLabel}>Total Balance</Text>
@@ -85,54 +83,41 @@ export default function App() {
               <Text style={styles.statText}>+2.5% this week</Text>
             </View>
             <View style={styles.balanceStat}>
-              <Text style={styles.statDot} />
+              <View style={styles.statDot} />
               <Text style={styles.statLabel}>Savings</Text>
             </View>
           </View>
         </View>
 
-        {/* Quick Actions */}
         <Text style={styles.sectionTitle}>Quick Actions</Text>
         <View style={styles.actionsRow}>
-          <TouchableOpacity style={styles.actionBtn}>
-            <View style={[styles.actionIcon, { backgroundColor: "#EEF2FF" }]}>
-              <Text style={styles.actionEmoji}>💳</Text>
-            </View>
-            <Text style={styles.actionLabel}>Payments</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn}>
-            <View style={[styles.actionIcon, { backgroundColor: "#F0FDF4" }]}>
-              <Text style={styles.actionEmoji}>💰</Text>
-            </View>
-            <Text style={styles.actionLabel}>Top Up</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn}>
-            <View style={[styles.actionIcon, { backgroundColor: "#FFF7ED" }]}>
-              <Text style={styles.actionEmoji}>📊</Text>
-            </View>
-            <Text style={styles.actionLabel}>Reports</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn}>
-            <View style={[styles.actionIcon, { backgroundColor: "#FEF2F2" }]}>
-              <Text style={styles.actionEmoji}>⚙️</Text>
-            </View>
-            <Text style={styles.actionLabel}>Settings</Text>
-          </TouchableOpacity>
+          {[
+            { emoji: "💳", label: "Payments", bg: "#FEF5E7" },
+            { emoji: "💰", label: "Top Up", bg: "#FEF9E7" },
+            { emoji: "📊", label: "Reports", bg: "#FDF2E9" },
+            { emoji: "⚙️", label: "Settings", bg: "#F5EEF8" },
+          ].map((item, i) => (
+            <TouchableOpacity key={i} style={styles.actionBtn}>
+              <View style={[styles.actionIcon, { backgroundColor: item.bg }]}>
+                <Text style={styles.actionEmoji}>{item.emoji}</Text>
+              </View>
+              <Text style={styles.actionLabel}>{item.label}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
-        {/* Services */}
         <Text style={styles.sectionTitle}>Our Services</Text>
         <View style={styles.servicesGrid}>
           {[
-            { emoji: "📱", title: "Mobile Recharge", color: "#EEF2FF" },
-            { emoji: "💡", title: "Electricity Bill", color: "#F0FDF4" },
-            { emoji: "📺", title: "TV Subscription", color: "#FFF7ED" },
-            { emoji: "🌐", title: "Internet Bundle", color: "#FEF2F2" },
-            { emoji: "🏦", title: "Bank Transfer", color: "#F5F3FF" },
-            { emoji: "🎮", title: "Gaming Cards", color: "#FCE7F3" },
+            { emoji: "📱", title: "Mobile Recharge", bg: "#FEF5E7" },
+            { emoji: "💡", title: "Electricity Bill", bg: "#FEF9E7" },
+            { emoji: "📺", title: "TV Subscription", bg: "#FDF2E9" },
+            { emoji: "🌐", title: "Internet Bundle", bg: "#F5EEF8" },
+            { emoji: "🏦", title: "Bank Transfer", bg: "#E8F8F5" },
+            { emoji: "🎮", title: "Gaming Cards", bg: "#FDEDEC" },
           ].map((item, i) => (
             <TouchableOpacity key={i} style={styles.serviceCard}>
-              <View style={[styles.serviceIcon, { backgroundColor: item.color }]}>
+              <View style={[styles.serviceIcon, { backgroundColor: item.bg }]}>
                 <Text style={styles.serviceEmoji}>{item.emoji}</Text>
               </View>
               <Text style={styles.serviceTitle}>{item.title}</Text>
@@ -140,16 +125,15 @@ export default function App() {
           ))}
         </View>
 
-        {/* Recent Activity */}
         <Text style={styles.sectionTitle}>Recent Activity</Text>
         <View style={styles.activityCard}>
           {[
-            { emoji: "📤", title: "Sent to Ahmed", amount: "-$50.00", time: "2 hours ago", color: "#FEF2F2" },
-            { emoji: "📥", title: "Received from Sara", amount: "+$200.00", time: "5 hours ago", color: "#F0FDF4" },
-            { emoji: "💳", title: "Payment Successful", amount: "-$25.00", time: "Yesterday", color: "#EEF2FF" },
+            { emoji: "📤", title: "Sent to Ahmed", amount: "-$50.00", time: "2 hours ago", bg: "#FDEDEC" },
+            { emoji: "📥", title: "Received from Sara", amount: "+$200.00", time: "5 hours ago", bg: "#E8F8F5" },
+            { emoji: "💳", title: "Payment Successful", amount: "-$25.00", time: "Yesterday", bg: "#FEF5E7" },
           ].map((item, i) => (
             <View key={i} style={styles.activityItem}>
-              <View style={[styles.activityIcon, { backgroundColor: item.color }]}>
+              <View style={[styles.activityIcon, { backgroundColor: item.bg }]}>
                 <Text style={styles.activityEmoji}>{item.emoji}</Text>
               </View>
               <View style={styles.activityInfo}>
@@ -158,7 +142,7 @@ export default function App() {
               </View>
               <Text style={[
                 styles.activityAmount,
-                { color: item.amount.startsWith("+") ? "#22C55E" : "#EF4444" }
+                { color: item.amount.startsWith("+") ? "#27AE60" : "#C0392B" }
               ]}>
                 {item.amount}
               </Text>
@@ -167,7 +151,6 @@ export default function App() {
         </View>
       </ScrollView>
 
-      {/* Bottom Nav */}
       <View style={styles.bottomNav}>
         {[
           { icon: "🏠", label: "Home" },
@@ -188,10 +171,10 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8F9FC",
+    backgroundColor: "#FFFBF0",
   },
   header: {
-    backgroundColor: "#1a1a2e",
+    backgroundColor: "#1A120B",
     paddingTop: Platform.OS === "android" ? 48 : 60,
     paddingBottom: 24,
     paddingHorizontal: 24,
@@ -206,21 +189,21 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#6C63FF",
+    backgroundColor: "#D4A853",
     justifyContent: "center",
     alignItems: "center",
   },
   avatarText: {
-    color: "#FFF",
+    color: "#1A120B",
     fontSize: 20,
-    fontWeight: "700",
+    fontWeight: "800",
   },
   headerText: {
     flex: 1,
     marginLeft: 14,
   },
   greeting: {
-    color: "rgba(255,255,255,0.65)",
+    color: "rgba(255,255,255,0.6)",
     fontSize: 13,
     fontWeight: "500",
   },
@@ -234,7 +217,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(255,255,255,0.1)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -248,7 +231,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#EF4444",
+    backgroundColor: "#D4A853",
   },
   scroll: {
     flex: 1,
@@ -260,14 +243,14 @@ const styles = StyleSheet.create({
 
   // Balance Card
   balanceCard: {
-    backgroundColor: "#6C63FF",
+    backgroundColor: "#D4A853",
     borderRadius: 20,
     padding: 24,
     marginTop: 24,
-    shadowColor: "#6C63FF",
+    shadowColor: "#D4A853",
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 20,
+    shadowOpacity: 0.4,
+    shadowRadius: 24,
     elevation: 10,
   },
   balanceRow: {
@@ -276,17 +259,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   balanceLabel: {
-    color: "rgba(255,255,255,0.75)",
+    color: "rgba(26,18,11,0.65)",
     fontSize: 14,
-    fontWeight: "500",
-  },
-  balanceCurrency: {
-    color: "rgba(255,255,255,0.5)",
-    fontSize: 16,
     fontWeight: "600",
   },
+  balanceCurrency: {
+    color: "rgba(26,18,11,0.45)",
+    fontSize: 16,
+    fontWeight: "700",
+  },
   balanceAmount: {
-    color: "#FFF",
+    color: "#1A120B",
     fontSize: 38,
     fontWeight: "800",
     marginTop: 8,
@@ -299,40 +282,41 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255,255,255,0.15)",
+    borderTopColor: "rgba(26,18,11,0.12)",
   },
   balanceStat: {
     flexDirection: "row",
     alignItems: "center",
   },
   statArrow: {
-    color: "#4ADE80",
+    color: "#1A120B",
     fontSize: 16,
     fontWeight: "700",
     marginRight: 4,
   },
   statText: {
-    color: "rgba(255,255,255,0.75)",
+    color: "rgba(26,18,11,0.7)",
     fontSize: 12,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   statDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: "#4ADE80",
+    backgroundColor: "#1A120B",
     marginRight: 6,
   },
   statLabel: {
-    color: "rgba(255,255,255,0.65)",
+    color: "rgba(26,18,11,0.6)",
     fontSize: 12,
+    fontWeight: "500",
   },
 
   // Quick Actions
   sectionTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#1A1A2E",
+    color: "#2D1810",
     marginTop: 24,
     marginBottom: 14,
   },
@@ -356,7 +340,7 @@ const styles = StyleSheet.create({
   },
   actionLabel: {
     fontSize: 12,
-    color: "#4B5563",
+    color: "#5D4037",
     fontWeight: "600",
     marginTop: 8,
   },
@@ -373,9 +357,11 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 14,
     alignItems: "center",
-    shadowColor: "#000",
+    borderWidth: 1,
+    borderColor: "#F5E6CC",
+    shadowColor: "#D4A853",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
+    shadowOpacity: 0.06,
     shadowRadius: 6,
     elevation: 2,
   },
@@ -391,7 +377,7 @@ const styles = StyleSheet.create({
   },
   serviceTitle: {
     fontSize: 11,
-    color: "#374151",
+    color: "#4A3728",
     fontWeight: "600",
     textAlign: "center",
     marginTop: 8,
@@ -402,9 +388,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 16,
     padding: 16,
-    shadowColor: "#000",
+    borderWidth: 1,
+    borderColor: "#F5E6CC",
+    shadowColor: "#D4A853",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
+    shadowOpacity: 0.06,
     shadowRadius: 6,
     elevation: 2,
   },
@@ -413,7 +401,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    borderBottomColor: "#F5EDE0",
   },
   activityIcon: {
     width: 40,
@@ -432,11 +420,11 @@ const styles = StyleSheet.create({
   activityTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#1F2937",
+    color: "#2D1810",
   },
   activityTime: {
     fontSize: 12,
-    color: "#9CA3AF",
+    color: "#A09080",
     marginTop: 2,
   },
   activityAmount: {
@@ -452,7 +440,7 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === "android" ? 10 : 28,
     paddingHorizontal: 24,
     borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
+    borderTopColor: "#F5EDE0",
   },
   navItem: {
     flex: 1,
@@ -460,19 +448,19 @@ const styles = StyleSheet.create({
   },
   navIcon: {
     fontSize: 22,
-    opacity: 0.4,
+    opacity: 0.35,
   },
   navIconActive: {
     opacity: 1,
   },
   navLabel: {
     fontSize: 11,
-    color: "#9CA3AF",
+    color: "#A09080",
     fontWeight: "500",
     marginTop: 4,
   },
   navLabelActive: {
-    color: "#6C63FF",
+    color: "#D4A853",
     fontWeight: "700",
   },
 });
