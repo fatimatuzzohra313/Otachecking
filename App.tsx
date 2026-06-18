@@ -42,7 +42,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    checkOTA();
+    const timer = setTimeout(() => checkOTA(), 3000);
+    return () => clearTimeout(timer);
   }, []);
 
   const shareApp = useCallback(() => {
