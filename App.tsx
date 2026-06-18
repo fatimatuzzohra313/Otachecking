@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -17,33 +17,36 @@ const GITHUB_RAW = "https://raw.githubusercontent.com/fatimatuzzohra313/Otacheck
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.myapp";
 
 export default function App() {
-  async function checkOTA() {
-    try {
-      const verRes = await fetch(`${GITHUB_RAW}/version.json`);
-      const remote = await verRes.json();
-      const localVersion = await OTAHotUpdate.getCurrentVersion();
-
-      if (localVersion !== remote.version) {
-        const destPath = `${RNFS.DocumentDirectoryPath}/${BUNDLE_NAME}`;
-        const dl = RNFS.downloadFile({
-          fromUrl: remote.bundleUrl,
-          toFile: destPath,
-        });
-        const result = await dl.promise;
-        if (result.statusCode === 200) {
-          const success = await OTAHotUpdate.setupExactBundlePath(destPath);
-          if (success) {
-            await OTAHotUpdate.setCurrentVersion(remote.version);
-            await OTAHotUpdate.resetApp();
-          }
-        }
-      }
-    } catch (_) {}
-  }
+  const checked = useRef(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => checkOTA(), 3000);
-    return () => clearTimeout(timer);
+    if (checked.current) return;
+    checked.current = true;
+
+    (async () => {
+      try {
+        const verRes = await fetch(`${GITHUB_RAW}/version.json`);
+        if (!verRes.ok) return;
+        const remote = await verRes.json();
+        const localVersion = await OTAHotUpdate.getCurrentVersion();
+
+        if (localVersion !== remote.version) {
+          const destPath = `${RNFS.DocumentDirectoryPath}/${BUNDLE_NAME}`;
+          const result = await RNFS.downloadFile({
+            fromUrl: remote.bundleUrl,
+            toFile: destPath,
+          }).promise;
+
+          if (result.statusCode === 200) {
+            const success = await OTAHotUpdate.setupExactBundlePath(destPath);
+            if (success) {
+              await OTAHotUpdate.setCurrentVersion(remote.version);
+              OTAHotUpdate.resetApp();
+            }
+          }
+        }
+      } catch (_) {}
+    })();
   }, []);
 
   const shareApp = useCallback(() => {
